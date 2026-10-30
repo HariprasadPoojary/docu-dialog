@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Local configuration and uploaded files
+.env
+.env.*
+!.env.example
+storage/*
+!storage/.gitkeep
