@@ -29,6 +29,7 @@ This repository is a project-scoped RAG chatbot. Users create projects, upload d
 ## Verification
 
 - For implementation changes, run the relevant formatter, static checks, and focused tests when available; report what was run and any failures.
+- Run the unit test suite after every change with `uv run python -m pytest tests/unit`.
 - Add regression coverage for authorization/project isolation, ingestion state transitions, and retrieval citations when changing those paths.
 - Do not claim a behavior is verified unless it was exercised.
 
