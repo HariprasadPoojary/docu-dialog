@@ -1,6 +1,10 @@
 """Basic process health endpoints."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.db.session import get_engine
 
 router = APIRouter(tags=["health"])
 
@@ -14,6 +18,12 @@ def healthcheck() -> dict[str, str]:
 
 @router.get("/readyz", summary="Readiness check")
 def readiness() -> dict[str, str]:
-    """Report that the app is ready; dependency checks are added with database wiring."""
+    """Check that the configured database can accept a simple query."""
 
-    return {"status": "ok"}
+    try:
+        with get_engine().connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except (RuntimeError, SQLAlchemyError) as exc:
+        raise HTTPException(status_code=503, detail="Database is unavailable") from exc
+
+    return {"status": "ok", "database": "ok"}

@@ -21,9 +21,11 @@ Requirements: Python 3.14 and [`uv`](https://docs.astral.sh/uv/).
 ```powershell
 uv sync
 Copy-Item .env.example .env
+docker compose up -d db
+uv run alembic upgrade head
 uv run fastapi dev app/main.py
 ```
 
 Open <http://127.0.0.1:8000> for the landing page, <http://127.0.0.1:8000/docs> for the API docs, and <http://127.0.0.1:8000/api/v1/healthz> for the liveness check.
 
-Settings are loaded from environment variables and an optional `.env` file. See `.env.example` for the current options. The readiness endpoint reports process readiness until database connectivity is added.
+Settings are loaded from environment variables and an optional `.env` file. See `.env.example` for the current options. The Compose service uses the official pgvector PostgreSQL image and persists data in a local Docker volume. The readiness endpoint checks the configured PostgreSQL connection.
