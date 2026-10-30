@@ -26,6 +26,8 @@ Upload API -> file storage -> ingestion worker -> extract / chunk / embed -> Pos
 
 The repository already declares FastAPI, LangChain, LangGraph, OpenAI integration, and dotenv. Database, migration, and vector-store dependencies should be added when implementation begins, with versions selected and locked together.
 
+FastAPI starts from `app/main.py`. Settings live in `app/core/config.py` and are loaded from environment variables plus an optional root `.env` file. Local documentation is enabled when `DEBUG=true`; the readiness endpoint will gain dependency checks when the database is wired in.
+
 ## Main components
 
 ### Web client
