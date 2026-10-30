@@ -13,6 +13,7 @@ This repository is a project-scoped RAG chatbot. Users create projects, upload d
 - Keep LangGraph orchestration in `app/workflows`; keep retrieval, prompts, and provider adapters in `app/rag`.
 - Keep parsing and embedding work out of synchronous upload requests. Track ingestion state and make retries safe.
 - Validate uploaded content and size, use generated storage keys, and do not use client filenames as paths.
+- Keep local file cleanup aligned with document and project deletion; database records must never expose local storage paths.
 - Keep secrets and user document contents out of source control and routine logs.
 - Use Alembic migrations for database schema changes; do not rely on ad hoc startup DDL.
 - Keep the initial frontend plain HTML, CSS, and JavaScript unless the project direction is deliberately updated.

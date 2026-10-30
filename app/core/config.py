@@ -18,13 +18,16 @@ class Settings(BaseSettings):
     )
 
     app_name: str = "DocuDialog"
-    environment: str = "local"
+    environment: str = "production"
     local_user_email: str = "developer@local.test"
-    debug: bool = True
+    debug: bool = False
     api_v1_prefix: str = "/api/v1"
     cors_origins: list[str] = Field(default_factory=list)
     database_url: str | None = None
     upload_directory: Path = Path("storage/uploads")
+    max_upload_bytes: int = Field(default=20 * 1024 * 1024, gt=0)
+    max_upload_total_bytes: int = Field(default=50 * 1024 * 1024, gt=0)
+    max_upload_files: int = Field(default=10, gt=0)
 
 
 @lru_cache

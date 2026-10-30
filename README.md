@@ -12,7 +12,7 @@ Users will be able to create projects, upload documents into them, select a proj
 
 ## Current status
 
-The local FastAPI application is available with environment-based configuration, health endpoints, project CRUD endpoints, and a small landing page. Document upload, ingestion, and chat are still planned.
+The local FastAPI application is available with environment-based configuration, health endpoints, project and document management endpoints, and a browser workspace. Background ingestion and chat are still planned.
 
 ## Run locally
 
@@ -30,4 +30,6 @@ Open <http://127.0.0.1:8000> for the landing page, <http://127.0.0.1:8000/docs> 
 
 Settings are loaded from environment variables and an optional `.env` file. See `.env.example` for the current options. The Compose service uses the official pgvector PostgreSQL image and persists data in a local Docker volume. The readiness endpoint checks the configured PostgreSQL connection.
 
-Project endpoints are under `/api/v1/projects` and support create, list, read, update, and delete. Until an authentication provider is selected, these endpoints use one fixed local development user when `ENVIRONMENT=local`; they return an error in other environments. This local identity is for development only and does not authenticate real users.
+Project endpoints are under `/api/v1/projects` and support create, list, read, update, and delete. Document endpoints are under `/api/v1/projects/{project_id}/documents` and support multi-file upload, listing, and deletion. Uploads accept PDF, DOCX, TXT, Markdown, and CSV; defaults allow 20 MB per file, 50 MB total per request, and 10 files per request. Values are configurable in `.env`.
+
+Until an authentication provider is selected, these endpoints use one fixed local development user when `ENVIRONMENT=local`; they return an error in other environments. This local identity is for development only and does not authenticate real users. Uploaded files use generated storage keys under `storage/uploads` and are recorded as `queued`; document extraction and indexing are the next step.

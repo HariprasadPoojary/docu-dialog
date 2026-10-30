@@ -46,6 +46,8 @@ Services own workflows and transactions; repositories encapsulate database reads
 
 The upload request stores the file and creates a document record with a queued status, then hands work to a worker. The worker extracts text, splits it into chunks with source metadata, creates embeddings, and upserts chunks. Document status moves through `queued`, `processing`, `ready`, or `failed`. Retries should be safe and remove or replace stale chunks atomically where practical.
 
+The current upload implementation validates an extension allowlist (PDF, DOCX, TXT, Markdown, CSV), enforces configurable per-file and request limits, writes through generated storage keys, and commits metadata for all files in a request together. A database failure triggers rollback and cleanup of the staged files. Ingestion queue/worker execution is not implemented yet; uploaded documents remain `queued`.
+
 ### LangGraph chat workflow
 
 Suggested graph stages:
@@ -75,14 +77,14 @@ All paths below are under `/api/v1`.
 
 - `GET/POST /projects`, `GET/PATCH/DELETE /projects/{project_id}`
 - `GET/POST /projects/{project_id}/documents`
-- `GET/DELETE /projects/{project_id}/documents/{document_id}`
+- `DELETE /projects/{project_id}/documents/{document_id}`
 - `POST /projects/{project_id}/documents/{document_id}/retry`
 - `POST /projects/{project_id}/chat` (optionally streaming)
-- `GET /health` and `/ready` for liveness and dependency readiness
+- `GET /healthz` and `/readyz` for liveness and database readiness
 
 Every nested resource operation verifies that the project belongs to or is shared with the caller. Document operations also verify the document is inside that project. Chat retrieval always applies both authorization and the selected project filter.
 
-Project CRUD is implemented. Until an authentication provider is selected, local development uses one fixed local user configured by `LOCAL_USER_EMAIL`; the identity dependency fails closed outside `ENVIRONMENT=local` and must be replaced by real authentication before deployment.
+Project CRUD and basic document upload/list/delete are implemented. Local file storage defaults to `storage/uploads`, and upload limits are configured with `MAX_UPLOAD_BYTES`, `MAX_UPLOAD_TOTAL_BYTES`, and `MAX_UPLOAD_FILES`. Until an authentication provider is selected, local development uses one fixed local user configured by `LOCAL_USER_EMAIL`; the identity dependency fails closed outside `ENVIRONMENT=local` and must be replaced by real authentication before deployment.
 
 ## Security and reliability
 

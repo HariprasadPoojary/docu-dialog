@@ -4,6 +4,13 @@
 
 Let a user create projects, upload multiple documents to each project, and ask questions in a chatbot after selecting a project. Answers must be grounded in documents belonging to that selected project and show useful source references.
 
+## Current progress
+
+- [x] FastAPI local setup, environment configuration, PostgreSQL sessions, and Alembic baseline with `pgvector` enabled.
+- [x] Project CRUD and local multi-file upload/list/delete with project ownership checks and upload limits.
+- [ ] Document extraction, chunking, embeddings, and background ingestion worker.
+- [ ] Project-scoped chat workflow and cited answers.
+
 ## Delivery phases
 
 ### 1. Foundation and architecture
@@ -59,7 +66,6 @@ Let a user create projects, upload multiple documents to each project, and ask q
 
 ## Open decisions for implementation
 
-- Supported file formats and upload limits.
 - Authentication provider and whether projects need sharing/membership beyond their creator.
 - Embedding and chat model provider, dimensions, cost limits, and retention policy.
 - Production file storage and background-job broker.

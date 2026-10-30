@@ -300,6 +300,18 @@ button:disabled {
 	color: #738076;
 	font-size: 0.9rem;
 }
+.document-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; }
+.document-heading h3 { margin: 0; font-size: 1rem; }
+.upload-form { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.upload-form input[type="file"] { flex: 1; min-width: 0; padding: 8px; font-size: 0.82rem; }
+.upload-form .primary-button { width: auto; flex: 0 0 auto; margin: 0; }
+.document-items { display: grid; gap: 8px; margin-top: 14px; }
+.document-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 12px; border: 1px solid #e5ebe5; border-radius: 10px; }
+.document-info { min-width: 0; }
+.document-filename { display: block; overflow: hidden; color: #34483a; font-size: 0.9rem; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.document-meta { display: block; margin-top: 4px; color: #819087; font-size: 0.77rem; }
+.document-empty { margin: 12px 0 0; color: #819087; font-size: 0.85rem; }
+.upload-note { margin: 8px 0 0; color: #87938a; font-size: 0.76rem; line-height: 1.5; }
 
 @media (max-width: 720px) {
 	.topbar {
@@ -311,5 +323,12 @@ button:disabled {
 	}
 	.workspace {
 		grid-template-columns: 1fr;
+	}
+	.upload-form {
+		align-items: stretch;
+		flex-direction: column;
+	}
+	.upload-form .primary-button {
+		width: 100%;
 	}
 }
