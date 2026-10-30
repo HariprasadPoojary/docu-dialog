@@ -18,13 +18,30 @@ function hideNotice() {
   notice.textContent = "";
 }
 
+function getErrorMessage(detail, status) {
+  if (typeof detail === "string" && detail.trim()) return detail;
+  if (Array.isArray(detail)) {
+    const messages = detail
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (typeof item?.msg === "string") {
+          return item.msg.replace(/^Value error,\s*/, "");
+        }
+        return null;
+      })
+      .filter(Boolean);
+    if (messages.length) return messages.join("; ");
+  }
+  return `Request failed (${status})`;
+}
+
 async function request(path, options = {}) {
   const headers = { ...options.headers };
   if (!(options.body instanceof FormData)) headers["Content-Type"] = "application/json";
   const response = await fetch(`${apiBase}${path}`, { ...options, headers });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    throw new Error(body.detail || `Request failed (${response.status})`);
+    throw new Error(getErrorMessage(body.detail, response.status));
   }
   if (response.status === 204) return null;
   return response.json();

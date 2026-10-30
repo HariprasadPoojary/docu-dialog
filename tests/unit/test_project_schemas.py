@@ -17,6 +17,13 @@ def test_project_create_rejects_blank_name(name: str) -> None:
         ProjectCreate(name=name)
 
 
+def test_project_create_reports_clear_error_for_whitespace_name_and_description() -> None:
+    with pytest.raises(ValidationError) as error:
+        ProjectCreate(name="   ", description="   ")
+
+    assert error.value.errors()[0]["msg"] == "Value error, Project name cannot be blank"
+
+
 def test_project_create_enforces_field_lengths() -> None:
     with pytest.raises(ValidationError):
         ProjectCreate(name="x" * 161)
