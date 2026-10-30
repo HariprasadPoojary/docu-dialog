@@ -82,6 +82,8 @@ All paths below are under `/api/v1`.
 
 Every nested resource operation verifies that the project belongs to or is shared with the caller. Document operations also verify the document is inside that project. Chat retrieval always applies both authorization and the selected project filter.
 
+Project CRUD is implemented. Until an authentication provider is selected, local development uses one fixed local user configured by `LOCAL_USER_EMAIL`; the identity dependency fails closed outside `ENVIRONMENT=local` and must be replaced by real authentication before deployment.
+
 ## Security and reliability
 
 - Treat uploaded files as untrusted: allowlist formats, cap size, sanitize display names, generate storage keys, and never use a user filename as a filesystem path.

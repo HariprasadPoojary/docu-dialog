@@ -12,7 +12,7 @@ Users will be able to create projects, upload documents into them, select a proj
 
 ## Current status
 
-The local FastAPI application is available with environment-based configuration, health endpoints, and a small landing page. Project management, document ingestion, database integration, and chat are planned in the roadmap and are not implemented yet.
+The local FastAPI application is available with environment-based configuration, health endpoints, project CRUD endpoints, and a small landing page. Document upload, ingestion, and chat are still planned.
 
 ## Run locally
 
@@ -29,3 +29,5 @@ uv run fastapi dev app/main.py
 Open <http://127.0.0.1:8000> for the landing page, <http://127.0.0.1:8000/docs> for the API docs, and <http://127.0.0.1:8000/api/v1/healthz> for the liveness check.
 
 Settings are loaded from environment variables and an optional `.env` file. See `.env.example` for the current options. The Compose service uses the official pgvector PostgreSQL image and persists data in a local Docker volume. The readiness endpoint checks the configured PostgreSQL connection.
+
+Project endpoints are under `/api/v1/projects` and support create, list, read, update, and delete. Until an authentication provider is selected, these endpoints use one fixed local development user when `ENVIRONMENT=local`; they return an error in other environments. This local identity is for development only and does not authenticate real users.

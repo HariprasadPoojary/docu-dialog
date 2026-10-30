@@ -8,6 +8,7 @@ This repository is a project-scoped RAG chatbot. Users create projects, upload d
 
 - Keep HTTP handling in `app/api`, business workflows in `app/services`, and persistence access in scoped `app/repositories`.
 - Every document, conversation, and retrieval operation must be authorized against the caller and its project. Do not trust a project ID supplied by the browser.
+- The fixed local development identity is only for `ENVIRONMENT=local`; never enable it in shared or production deployments. Replace it with a real identity provider before exposing project APIs.
 - Every vector search must include the authorized project filter in the database query. Never retrieve globally and filter after results are returned.
 - Keep LangGraph orchestration in `app/workflows`; keep retrieval, prompts, and provider adapters in `app/rag`.
 - Keep parsing and embedding work out of synchronous upload requests. Track ingestion state and make retries safe.

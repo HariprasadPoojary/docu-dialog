@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     app_name: str = "DocuDialog"
     environment: str = "local"
+    local_user_email: str = "developer@local.test"
     debug: bool = True
     api_v1_prefix: str = "/api/v1"
     cors_origins: list[str] = Field(default_factory=list)

@@ -1,23 +1,114 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Ask questions grounded in your project documents.">
-    <title>DocuDialog</title>
-    <link rel="stylesheet" href="/static/styles.css">
-  </head>
-  <body>
-    <main class="welcome-card">
-      <p class="eyebrow">Project knowledge, in one place</p>
-      <h1>DocuDialog</h1>
-      <p class="intro">A space to organize project documents and get answers grounded in their contents.</p>
-      <div class="status" role="status">
-        <span class="status-dot" aria-hidden="true"></span>
-        Local development app is running
-      </div>
-      <p class="next-step">Project and document workflows are coming next.</p>
-      <a href="/docs">Explore the API</a>
-    </main>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="description"
+			content="Create projects for your document-grounded conversations."
+		/>
+		<title>DocuDialog · Projects</title>
+		<link rel="stylesheet" href="/static/styles.css" />
+		<script src="/static/app.js" defer></script>
+	</head>
+	<body>
+		<header class="topbar">
+			<a class="brand" href="/" aria-label="DocuDialog home"
+				><span class="brand-mark">D</span> DocuDialog</a
+			>
+			<span class="environment"
+				><span class="status-dot" aria-hidden="true"></span> Local
+				workspace</span
+			>
+		</header>
+
+		<main class="layout">
+			<section class="intro">
+				<p class="eyebrow">Your knowledge workspace</p>
+				<h1>Projects</h1>
+				<p>
+					Give each project its own documents and conversations.
+					Create a project to get started.
+				</p>
+			</section>
+
+			<div
+				id="notice"
+				class="notice"
+				role="status"
+				aria-live="polite"
+				hidden
+			></div>
+
+			<section class="workspace" aria-label="Project management">
+				<aside class="create-panel">
+					<h2>New project</h2>
+					<p class="muted">
+						Start a separate space for a topic or body of work.
+					</p>
+					<form id="create-project-form">
+						<label for="project-name">Project name</label>
+						<input
+							id="project-name"
+							name="name"
+							type="text"
+							maxlength="160"
+							placeholder="e.g. Product handbook"
+							required
+						/>
+						<label for="project-description"
+							>Description
+							<span class="optional">Optional</span></label
+						>
+						<textarea
+							id="project-description"
+							name="description"
+							rows="4"
+							maxlength="4000"
+							placeholder="What belongs in this project?"
+						></textarea>
+						<button class="primary-button" type="submit">
+							Create project
+						</button>
+					</form>
+				</aside>
+
+				<section
+					class="projects-panel"
+					aria-labelledby="projects-title"
+				>
+					<div class="panel-heading">
+						<div>
+							<h2 id="projects-title">Your projects</h2>
+							<p class="muted">
+								<span id="project-count">0</span> projects
+							</p>
+						</div>
+						<button
+							id="refresh-projects"
+							class="quiet-button"
+							type="button"
+							aria-label="Refresh projects"
+						>
+							Refresh
+						</button>
+					</div>
+					<div
+						id="project-list"
+						class="project-list"
+						aria-live="polite"
+					>
+						<p class="empty-state">Loading projects…</p>
+					</div>
+				</section>
+			</section>
+
+			<section
+				id="selected-project"
+				class="selected-panel"
+				aria-live="polite"
+				hidden
+			></section>
+		</main>
+	</body>
 </html>
