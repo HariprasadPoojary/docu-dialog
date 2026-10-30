@@ -1,4 +1,4 @@
-# Project RAG Chatbot Roadmap
+# DocuDialog Roadmap
 
 ## Product goal
 

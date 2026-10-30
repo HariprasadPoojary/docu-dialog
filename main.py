@@ -1,5 +1,5 @@
 def main():
-    print("Hello from generic-rag!")
+    print("Hello from DocuDialog!")
 
 
 if __name__ == "__main__":

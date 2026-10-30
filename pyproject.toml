@@ -1,7 +1,7 @@
 [project]
-name = "generic-rag"
+name = "docu-dialog"
 version = "0.1.0"
-description = "Add your description here"
+description = "Project-scoped document chatbot with answers grounded in source documents"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

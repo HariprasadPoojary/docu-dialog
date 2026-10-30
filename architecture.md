@@ -1,8 +1,8 @@
-# Architecture
+# DocuDialog Architecture
 
 ## Overview
 
-The application is a project-scoped retrieval-augmented chatbot. A user selects a project in the browser and submits a question. The API verifies access to that project, invokes a LangGraph RAG workflow, and returns an answer with citations drawn only from documents indexed for that project.
+DocuDialog is a project-scoped retrieval-augmented chatbot. A user selects a project in the browser and submits a question. The API verifies access to that project, invokes a LangGraph RAG workflow, and returns an answer with citations drawn only from documents indexed for that project.
 
 ```text
 Browser (HTML / CSS / JavaScript)

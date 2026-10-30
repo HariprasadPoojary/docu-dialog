@@ -1,6 +1,6 @@
-# Generic RAG
+# DocuDialog
 
-A project-scoped document RAG chatbot built with FastAPI, LangChain, LangGraph, plain HTML/CSS/JavaScript, and PostgreSQL with `pgvector`.
+Chat with answers grounded in your project documents. DocuDialog is a project-scoped document chatbot built with FastAPI, LangChain, LangGraph, plain HTML/CSS/JavaScript, and PostgreSQL with `pgvector`.
 
 Users will be able to create projects, upload documents into them, select a project, and ask questions answered from that project's indexed documents with source citations.
 
