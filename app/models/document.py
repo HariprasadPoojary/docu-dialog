@@ -13,8 +13,10 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Index,
+    Integer,
     String,
     Text,
+    UniqueConstraint,
     Uuid,
     func,
 )
@@ -23,11 +25,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 if TYPE_CHECKING:
+    from app.models.chunk import DocumentChunk
     from app.models.project import Project
 
 
 class DocumentStatus(StrEnum):
-    """Lifecycle states for a document and its future ingestion job."""
+    """Lifecycle states for a document ingestion job."""
 
     QUEUED = "queued"
     PROCESSING = "processing"
@@ -44,8 +47,10 @@ class Document(Base):
         CheckConstraint(
             "status IN ('queued', 'processing', 'ready', 'failed')", name="valid_status"
         ),
+        CheckConstraint("ingestion_attempts >= 0", name="attempts_nonnegative"),
         Index("ix_documents_project_id", "project_id"),
         Index("ix_documents_project_status", "project_id", "status"),
+        UniqueConstraint("id", "project_id", name="uq_documents_id_project_id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -64,6 +69,7 @@ class Document(Base):
         server_default=DocumentStatus.QUEUED.value,
     )
     error_message: Mapped[str | None] = mapped_column(Text)
+    ingestion_attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
@@ -72,3 +78,6 @@ class Document(Base):
     )
 
     project: Mapped[Project] = relationship(back_populates="documents")
+    chunks: Mapped[list[DocumentChunk]] = relationship(
+        back_populates="document", cascade="all, delete-orphan", passive_deletes=True
+    )

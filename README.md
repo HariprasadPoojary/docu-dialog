@@ -12,7 +12,7 @@ Users will be able to create projects, upload documents into them, select a proj
 
 ## Current status
 
-The local FastAPI application is available with environment-based configuration, health endpoints, project and document management endpoints, and a browser workspace. Background ingestion and chat are still planned.
+The local FastAPI application is available with environment-based configuration, health endpoints, project and document management endpoints, and a browser workspace. Background document ingestion is implemented; project-scoped chat is the next roadmap phase.
 
 ## Run locally
 
@@ -32,4 +32,12 @@ Settings are loaded from environment variables and an optional `.env` file. See 
 
 Project endpoints are under `/api/v1/projects` and support create, list, read, update, and delete. Document endpoints are under `/api/v1/projects/{project_id}/documents` and support multi-file upload, listing, and deletion. Uploads accept PDF, DOCX, TXT, Markdown, and CSV; defaults allow 20 MB per file, 50 MB total per request, and 10 files per request. Values are configurable in `.env`.
 
-Until an authentication provider is selected, these endpoints use one fixed local development user when `ENVIRONMENT=local`; they return an error in other environments. This local identity is for development only and does not authenticate real users. Uploaded files use generated storage keys under `storage/uploads` and are recorded as `queued`; document extraction and indexing are the next step.
+Until an authentication provider is selected, these endpoints use one fixed local development user when `ENVIRONMENT=local`; they return an error in other environments. This local identity is for development only and does not authenticate real users. Uploaded files use generated storage keys under `storage/uploads` and are recorded as `queued`.
+
+To start indexing, set `OPENAI_API_KEY` in `.env` and run this command in a second terminal:
+
+```powershell
+uv run python -m app.workers.ingest
+```
+
+The worker uses `text-embedding-3-small` with 1,536 dimensions, stores source-aware chunks in `pgvector`, retries failures up to the configured limit, and marks exhausted jobs as failed. Failed documents can be retried from the project page. The worker polls PostgreSQL directly; run one or more worker processes without needing a separate broker.

@@ -8,7 +8,7 @@ Let a user create projects, upload multiple documents to each project, and ask q
 
 - [x] FastAPI local setup, environment configuration, PostgreSQL sessions, and Alembic baseline with `pgvector` enabled.
 - [x] Project CRUD and local multi-file upload/list/delete with project ownership checks and upload limits.
-- [ ] Document extraction, chunking, embeddings, and background ingestion worker.
+- [x] Document extraction, chunking, embeddings, and a database-backed background ingestion worker.
 - [ ] Project-scoped chat workflow and cited answers.
 
 ## Delivery phases
@@ -67,6 +67,6 @@ Let a user create projects, upload multiple documents to each project, and ask q
 ## Open decisions for implementation
 
 - Authentication provider and whether projects need sharing/membership beyond their creator.
-- Embedding and chat model provider, dimensions, cost limits, and retention policy.
+- Chat model provider, cost limits, and retention policy for documents and vectors.
 - Production file storage and background-job broker.
 - Whether chat history is persisted and whether responses stream token-by-token.

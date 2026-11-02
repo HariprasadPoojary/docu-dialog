@@ -117,7 +117,9 @@ function renderDocuments(projectId, documents) {
     filename.textContent = documentItem.original_filename;
     const metadata = document.createElement("span");
     metadata.className = "document-meta";
-    metadata.textContent = `${formatBytes(documentItem.size_bytes)} · ${documentItem.status}`;
+    metadata.textContent = documentItem.error_message
+      ? `${formatBytes(documentItem.size_bytes)} · ${documentItem.status} · ${documentItem.error_message}`
+      : `${formatBytes(documentItem.size_bytes)} · ${documentItem.status}`;
     info.append(filename, metadata);
 
     const remove = document.createElement("button");
@@ -127,6 +129,15 @@ function renderDocuments(projectId, documents) {
     remove.setAttribute("aria-label", `Remove ${documentItem.original_filename}`);
     remove.addEventListener("click", () => deleteDocument(projectId, documentItem));
     row.append(info, remove);
+    if (documentItem.status === "failed") {
+      const retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "quiet-button";
+      retry.textContent = "Retry";
+      retry.setAttribute("aria-label", `Retry indexing ${documentItem.original_filename}`);
+      retry.addEventListener("click", () => retryDocument(projectId, documentItem));
+      row.append(retry);
+    }
     list.append(row);
   }
 }
@@ -228,6 +239,17 @@ async function deleteDocument(projectId, documentItem) {
     hideNotice();
     await loadDocuments(projectId);
     showNotice("Document removed.", true);
+  } catch (error) {
+    showNotice(error.message);
+  }
+}
+
+async function retryDocument(projectId, documentItem) {
+  try {
+    await request(`/projects/${projectId}/documents/${documentItem.id}/retry`, { method: "POST" });
+    hideNotice();
+    await loadDocuments(projectId);
+    showNotice("Document queued for another indexing attempt.", true);
   } catch (error) {
     showNotice(error.message);
   }

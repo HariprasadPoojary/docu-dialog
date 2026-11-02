@@ -42,6 +42,11 @@ class LocalFileStorage:
 
         self._path_for(storage_key).unlink(missing_ok=True)
 
+    def read(self, storage_key: str) -> bytes:
+        """Read one stored file after validating that its key remains within the root."""
+
+        return self._path_for(storage_key).read_bytes()
+
     def _path_for(self, storage_key: str) -> Path:
         if not storage_key or Path(storage_key).name != storage_key:
             raise ValueError("Invalid storage key")

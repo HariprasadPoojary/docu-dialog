@@ -157,3 +157,25 @@ def delete_document(session: Session, project_id: UUID, document_id: UUID, user:
         storage.delete(storage_key)
     except OSError:
         logger.exception("Failed to remove stored file for document %s", document_id)
+
+
+def retry_document(session: Session, project_id: UUID, document_id: UUID, user: User) -> Document:
+    project = project_service.get_project(session, project_id, user)
+    document = document_repository.get_for_project(session, document_id, project.id)
+    if document is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
+    if document.status != DocumentStatus.FAILED.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Only failed documents can be retried",
+        )
+
+    document.status = DocumentStatus.QUEUED.value
+    document.ingestion_attempts = 0
+    document.error_message = None
+    try:
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    return document

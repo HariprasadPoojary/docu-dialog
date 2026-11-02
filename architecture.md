@@ -46,7 +46,7 @@ Services own workflows and transactions; repositories encapsulate database reads
 
 The upload request stores the file and creates a document record with a queued status, then hands work to a worker. The worker extracts text, splits it into chunks with source metadata, creates embeddings, and upserts chunks. Document status moves through `queued`, `processing`, `ready`, or `failed`. Retries should be safe and remove or replace stale chunks atomically where practical.
 
-The current upload implementation validates an extension allowlist (PDF, DOCX, TXT, Markdown, CSV), enforces configurable per-file and request limits, writes through generated storage keys, and commits metadata for all files in a request together. A database failure triggers rollback and cleanup of the staged files. Ingestion queue/worker execution is not implemented yet; uploaded documents remain `queued`.
+The upload implementation validates an extension allowlist (PDF, DOCX, TXT, Markdown, CSV), enforces configurable per-file and request limits, writes through generated storage keys, and commits metadata for all files in a request together. A database failure triggers rollback and cleanup of staged files. A database-backed worker claims queued rows with `FOR UPDATE SKIP LOCKED`, extracts text, chunks by page/section, embeds in batches, and atomically replaces chunk rows before marking a document `ready`. It retries failures up to a configured limit, recovers stale processing rows, and supports manual retries for failed documents.
 
 ### LangGraph chat workflow
 
@@ -69,7 +69,7 @@ The workflow should return an explicit insufficient-evidence response when the r
 - **Chunk:** document ID, project ID, ordinal, text, source metadata (page/section), embedding vector, and timestamps.
 - **Conversation / message:** optional persistence for chat sessions; every conversation belongs to a project and its owner.
 
-Use foreign keys and indexes for ownership, project/document relations, document status, and vector search. Keeping `project_id` on chunks supports efficient filtering, but integrity must ensure it matches the parent document. Use cascade or explicit cleanup rules for document/project deletion.
+Use foreign keys and indexes for ownership, project/document relations, document status, and vector search. Keep `project_id` on chunks for efficient filtering, and enforce that it matches the parent document with a composite foreign key. Use cascade or explicit cleanup rules for document/project deletion. The initial vector schema uses 1,536 dimensions to match `text-embedding-3-small`; changing dimensions requires a schema and re-embedding plan.
 
 ## API outline
 

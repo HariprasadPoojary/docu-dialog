@@ -41,3 +41,13 @@ def delete_document(
 ) -> Response:
     document_service.delete_document(session, project_id, document_id, user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/{document_id}/retry", response_model=DocumentResponse)
+def retry_document(
+    project_id: UUID,
+    document_id: UUID,
+    session: DatabaseSession,
+    user: CurrentUser,
+) -> DocumentResponse:
+    return document_service.retry_document(session, project_id, document_id, user)
